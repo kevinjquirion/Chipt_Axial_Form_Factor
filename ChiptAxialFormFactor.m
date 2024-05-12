@@ -49,8 +49,8 @@ Vpn[i_]:= -(I/(2F))\[Tau][i] \[Gamma]5
 Vppn[]:= -(1/(2F\[Pi]^2))
 VppnnNLO[p1_,p2_,k1_,k2_,i_,j_] := -(c2/(m^2 F\[Pi]^2))KD[i,k](p1.k1 k2.p1 + k1.p2 k2.p2) - (2c3)/F^2 KD[i,j] (k1.k2) + (I c4)/(2F^2) Sum[LC[[i,j,k]]\[Tau][k],{k,1,3}](slash[k1].slash[k2] - slash[k2].slash[k1])
 VapnnNLO[p1_,p2_,k_,q_,\[Mu]_,i_,j_] := -((I c2)/(m^2 F\[Pi]))KD[i,j](p1.k p1 + p2.k p2) - (2I c3)/F KD[i,j]k - c4/(2F) Sum[LC[[i,j,k]]\[Tau][k],{k,1,3}](slash[k].\[Gamma][\[Mu]] - \[Gamma][\[Mu]].slash[k]) - c6/(8m F) Sum[LC[[i,j,k]]\[Tau][k],{k,1,3}](slash[q].\[Gamma][\[Mu]] - \[Gamma][\[Mu]].slash[q])
-Pfermion[p_,e_,m_] := (slash[p] + m IdentityMatrix[4])/(p[[1]]^2 + e^2)
-Ppion[p_,e_] := 1/(p[[1]]^2+e^2)
+Pfermion[p_,e_,m_] := (slash[p] + m IdentityMatrix[4])/(p[[1]]^2 - e^2)
+Ppion[p_,e_] := 1/(p[[1]]^2 - e^2)
 PreFactor[] := ((IdentityMatrix[4]+\[Gamma][0])/2).(IdentityMatrix[4] + \[Gamma][3].\[Gamma]5)
 
 
