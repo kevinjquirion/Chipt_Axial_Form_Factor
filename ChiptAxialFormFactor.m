@@ -23,13 +23,15 @@ gA::usage = "Axial coupling constant";
 \[Tau]2::usage = "pauli matrix 2";
 \[Tau]3::usage = "pauli matrix 3";
 PreFactor::usage = "projection operator applied before taking the trace"
+Poles::usage = "poles[x0,f0,pm] calculate the poles of a given variable x0 and function f0 in the upper or lower half plane pm"
+Residues::usage = "Make a list of the complex pole integrals"
 
 
 Begin["`Private`"];
 
 
 \[Gamma][\[Mu]_] := Which[
-\[Mu]==0,{{1,0,0,0},{0,1,0,0},{0,0,-1,0},{0,0,0,-1}}
+\[Mu]==0, {{1,0,0,0},{0,1,0,0},{0,0,-1,0},{0,0,0,-1}}
 ,\[Mu]==1 ,{{0,0,0,1},{0,0,1,0},{0,-1,0,0},{-1,0,0,0}}
 ,\[Mu]==2 ,{{0,0,0,-I},{0,0,I,0},{0,I,0,0},{-I,0,0,0}}
 ,\[Mu]==3 ,{{0,0,1,0},{0,0,0,-1},{-1,0,0,0},{0,1,0,0}}]
@@ -49,9 +51,16 @@ Vpn[i_]:= -(I/(2F))\[Tau][i] \[Gamma]5
 Vppn[]:= -(1/(2F\[Pi]^2))
 VppnnNLO[p1_,p2_,k1_,k2_,i_,j_] := -(c2/(m^2 F\[Pi]^2))KD[i,k](p1.k1 k2.p1 + k1.p2 k2.p2) - (2c3)/F^2 KD[i,j] (k1.k2) + (I c4)/(2F^2) Sum[LC[[i,j,k]]\[Tau][k],{k,1,3}](slash[k1].slash[k2] - slash[k2].slash[k1])
 VapnnNLO[p1_,p2_,k_,q_,\[Mu]_,i_,j_] := -((I c2)/(m^2 F\[Pi]))KD[i,j](p1.k p1 + p2.k p2) - (2I c3)/F KD[i,j]k - c4/(2F) Sum[LC[[i,j,k]]\[Tau][k],{k,1,3}](slash[k].\[Gamma][\[Mu]] - \[Gamma][\[Mu]].slash[k]) - c6/(8m F) Sum[LC[[i,j,k]]\[Tau][k],{k,1,3}](slash[q].\[Gamma][\[Mu]] - \[Gamma][\[Mu]].slash[q])
-Pfermion[p_,e_,m_] := (slash[p] + m IdentityMatrix[4])/(p[[1]]^2 - e^2)
-Ppion[p_,e_] := 1/(p[[1]]^2 - e^2)
-PreFactor[] := ((IdentityMatrix[4]+\[Gamma][0])/2).(IdentityMatrix[4] + \[Gamma][3].\[Gamma]5)
+Pfermion[p_,e_,m_] := (slash[p] + m IdentityMatrix[4])/(p[[1]]^2 + e^2)
+Ppion[p_,e_] := 1/(p[[1]]^2 + e^2)
+PreFactor[] := ((IdentityMatrix[4]+\[Gamma][0])/2).(IdentityMatrix[4] + I \[Gamma]5.\[Gamma][3])
+Poles[x0_,f0_,pm_] := Module[
+{x = x0,f=f0},
+x0sols = x0 /. Solve[Denominator[f0]==0,x0];
+x0bool =  Table[If[Re[-pm I x0sols[[i]]] < 0,0,1]//Simplify,{i,1,Length[x0sols]}];
+x0s = Table[x0bool[[i]]*x0sols[[i]],{i,1,Length[Solve[Denominator[f0]==0,x0]]}]
+]
+Residues[f_,var_,poles_] := Table[2\[Pi] Residue[f,{var,poles[[i]]}],{i,1,Length[poles]}]
 
 
 End[];
